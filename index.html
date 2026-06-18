@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>时空小探险 — AI 时空学习乐园</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div id="app">
+        <!-- 欢迎页 -->
+        <div id="screen-welcome" class="screen active">
+            <div class="welcome-bg"></div>
+            <div class="welcome-content">
+                <div class="logo-title">
+                    <div class="earth-icon">🌍</div>
+                    <h1>时空小探险</h1>
+                    <p class="subtitle">和 AI 一起探索时空的奥秘 🌍✨</p>
+                </div>
+                <div class="welcome-robot">🤖</div>
+                <div class="welcome-desc">
+                    <span>🌏 认识世界</span>
+                    <span>🕐 穿越时间</span>
+                    <span>🧩 挑战闯关</span>
+                </div>
+                <button class="btn-primary" onclick="App.startExplore()">开始探索</button>
+            </div>
+        </div>
+
+        <!-- 探索主界面 -->
+        <div id="screen-explore" class="screen">
+            <!-- 顶部导航栏 -->
+            <header class="top-bar">
+                <div class="top-left">
+                    <span class="top-title">🌍 时空小探险</span>
+                </div>
+                <div class="top-right">
+                    <span class="info-badge" id="user-level">🌟 Lv.1</span>
+                    <span class="info-badge" id="user-score">⭐ 0</span>
+                    <span class="info-badge clickable" onclick="App.showScreen('achievements')">🏆 成就</span>
+                </div>
+            </header>
+
+            <!-- 主内容区 -->
+            <main class="explore-main">
+                <!-- 左侧 - 世界地图 -->
+                <div class="map-container" id="map-container">
+                    <svg id="world-map" viewBox="0 0 800 400"></svg>
+                    <!-- 地图上的动态标记 -->
+                    <div id="map-markers" class="map-markers"></div>
+                </div>
+
+                <!-- 右侧 - 信息面板 -->
+                <aside class="info-panel" id="info-panel">
+                    <div class="info-header">
+                        <h2 id="topic-title">选择一个区域探索</h2>
+                        <span class="current-season" id="current-season">🌱 春季</span>
+                    </div>
+                    <div class="info-body" id="info-body">
+                        <div class="info-placeholder">
+                            <p>点击地图上的区域或标记</p>
+                            <p>开始你的时空探索之旅！</p>
+                            <div class="placeholder-icon">🔍</div>
+                        </div>
+                    </div>
+                    <div class="info-footer">
+                        <button class="btn-accent" onclick="App.startChallenge()">🧩 挑战模式</button>
+                        <button class="btn-secondary" onclick="App.showTopicList()">📚 学习目录</button>
+                    </div>
+                </aside>
+            </main>
+
+            <!-- 底部 - 时间轴 -->
+            <div class="timeline-bar">
+                <div class="timeline-controls">
+                    <button class="tl-btn" onclick="Timeline.prevMonth()">◀</button>
+                    <div class="timeline-track" id="timeline-track">
+                        <div class="timeline-fill" id="timeline-fill"></div>
+                        <div class="timeline-thumb" id="timeline-thumb" draggable="true">●</div>
+                        <div class="timeline-labels" id="timeline-labels"></div>
+                    </div>
+                    <button class="tl-btn" onclick="Timeline.nextMonth()">▶</button>
+                    <span class="tl-date" id="tl-date">1月</span>
+                </div>
+            </div>
+
+            <!-- AI 向导 -->
+            <div class="ai-guide" id="ai-guide">
+                <div class="guide-avatar" id="guide-avatar">🤖</div>
+                <div class="guide-bubble" id="guide-bubble">
+                    <p id="guide-text">你好！我是小智，点击地图开始探索吧！</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 挑战界面 -->
+        <div id="screen-challenge" class="screen">
+            <header class="top-bar">
+                <div class="top-left">
+                    <button class="btn-back" onclick="App.showScreen('explore')">← 返回</button>
+                    <span class="top-title">🧩 时空挑战</span>
+                </div>
+                <div class="top-right">
+                    <span class="info-badge" id="challenge-progress">0/5</span>
+                    <span class="info-badge" id="challenge-streak">🔥 0</span>
+                </div>
+            </header>
+            <main class="challenge-main">
+                <div class="challenge-header">
+                    <h2 id="challenge-topic"></h2>
+                    <div class="difficulty-indicator" id="difficulty-indicator">
+                        <span class="diff-dot" data-level="1"></span>
+                        <span class="diff-dot" data-level="2"></span>
+                        <span class="diff-dot" data-level="3"></span>
+                    </div>
+                </div>
+                <div class="challenge-question" id="challenge-question">
+                    <p class="question-text" id="question-text"></p>
+                </div>
+                <div class="challenge-options" id="challenge-options"></div>
+                <div class="challenge-feedback" id="challenge-feedback"></div>
+                <div class="challenge-nav">
+                    <button class="btn-primary" id="btn-next" onclick="Challenges.nextQuestion()">下一题 →</button>
+                </div>
+            </main>
+            <div class="ai-guide challenge-guide">
+                <div class="guide-avatar">🤖</div>
+                <div class="guide-bubble">
+                    <p id="challenge-guide-text">试试回答这些问题吧！</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 成就界面 -->
+        <div id="screen-achievements" class="screen">
+            <header class="top-bar">
+                <div class="top-left">
+                    <button class="btn-back" onclick="App.showScreen('explore')">← 返回</button>
+                    <span class="top-title">🏆 我的成就</span>
+                </div>
+                <div class="top-right">
+                    <span class="info-badge" id="achieve-count">0/12</span>
+                </div>
+            </header>
+            <main class="achieve-main" id="achieve-main">
+                <div class="achieve-grid" id="achieve-grid"></div>
+            </main>
+        </div>
+
+        <!-- 学习目录弹窗 -->
+        <div id="topic-overlay" class="overlay hidden">
+            <div class="overlay-content">
+                <div class="overlay-header">
+                    <h2>📚 学习目录</h2>
+                    <button class="btn-close" onclick="App.closeTopicList()">✕</button>
+                </div>
+                <div class="topic-grid" id="topic-grid"></div>
+            </div>
+        </div>
+
+        <!-- 知识点讲解弹窗 -->
+        <div id="knowledge-overlay" class="overlay hidden">
+            <div class="overlay-content knowledge-content">
+                <div class="overlay-header">
+                    <h2 id="knowledge-title"></h2>
+                    <button class="btn-close" onclick="App.closeKnowledge()">✕</button>
+                </div>
+                <div class="knowledge-body" id="knowledge-body"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 版权信息 -->
+    <div class="copyright">
+        © 2026 中科欣辰 XAICHEN. MIT License.
+    </div>
+
+    <!-- 加载所有 JS 模块 -->
+    <script src="js/data/world-map.js"></script>
+    <script src="js/data/knowledge.js"></script>
+    <script src="js/engine/timeline.js"></script>
+    <script src="js/engine/map-renderer.js"></script>
+    <script src="js/engine/animations.js"></script>
+    <script src="js/ai/adaptive-engine.js"></script>
+    <script src="js/ai/guide.js"></script>
+    <script src="js/games/challenges.js"></script>
+    <script src="js/games/achievements.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
